@@ -1,10 +1,13 @@
-import Juego from "./public/assets/scenes/Juego.js";
+import Game from "./public/assets/scenes/Game.js";
+import Preload from "./public/assets/scenes/Preload.js";
+import Win from "./public/assets/scenes/Win.js";
+
 
 // Create a new Phaser config object
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 767,
+  height: 575,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -27,7 +30,7 @@ const config = {
   // List of scenes to load
   // Only the first scene will be shown
   // Remember to import the scene before adding it to the list
-  scene: [Juego],
+  scene: [Preload,Game, Win],
 };
 
 // Create a new Phaser game instance

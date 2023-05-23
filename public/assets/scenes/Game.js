@@ -1,13 +1,17 @@
 // URL to explain PHASER scene: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scene/
 
-export default class Juego extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
   constructor() {
     // key of the scene
     // the key will be used to start the scene by other scenes
-    super("hello-world");
+    super("Game");
   }
+  score;
+  scoreText;
+  gameWin;
 
   init() {
+    this.gameWin = false;
     // this is called before the scene is created
     // init variables
     // take data passed from other scenes
@@ -16,21 +20,13 @@ export default class Juego extends Phaser.Scene {
 
   preload() {
     // load assets
-    this.load.tilemapTiledJSON("map", "./public/tilemaps/nivel1.json");
-    this.load.image("tilesFondo", "./public/assets/images/sky.png");
-    this.load.image("tilesPlataforma", "./public/assets/images/platform.png");
-
-    this.load.image("star", "./public/assets/images/star.png");
-
-    this.load.spritesheet("dude", "./public/assets/images/dude.png", {
-      frameWidth: 32,
-      frameHeight: 48,
-    });
+   
   }
 
   create() {
     // todo / para hacer: texto de puntaje
 
+    
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
       key: "left",
@@ -56,18 +52,18 @@ export default class Juego extends Phaser.Scene {
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
-    const capaFondo = map.addTilesetImage("sky", "tilesFondo");
-    const capaPlataformas = map.addTilesetImage("platform", "tilesPlataforma");
+    const capaFondo = map.addTilesetImage("sky", "tilesBack");
+    const capaPlataformas = map.addTilesetImage("platform", "tilesPlatform");
 
     // Parameters: layer name (or index) from Tiled, tileset, x, y
-    const fondoLayer = map.createLayer("fondo", capaFondo, 0, 0);
+    const fondoLayer = map.createLayer("background", capaFondo, 0, 0);
     const plataformaLayer = map.createLayer(
-      "plataformas",
+      "platforms",
       capaPlataformas,
       0,
       0
     );
-    const objectosLayer = map.getObjectLayer("objetos");
+    const objectosLayer = map.getObjectLayer("objects");
 
     plataformaLayer.setCollisionByProperty({ colision: true });
 
@@ -76,22 +72,22 @@ export default class Juego extends Phaser.Scene {
     // crear el jugador
     // Find in the Object Layer, the name "dude" and get position
     const spawnPoint = map.findObject(
-      "objetos",
-      (obj) => obj.name === "jugador"
+      "objects",
+      (obj) => obj.name === "player"
     );
     console.log(spawnPoint);
     // The player and its settings
-    this.jugador = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
+    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
 
     //  Player physics properties. Give the little guy a slight bounce.
-    this.jugador.setBounce(0.1);
-    this.jugador.setCollideWorldBounds(true);
+    this.player.setBounce(0.1);
+    this.player.setCollideWorldBounds(true);
 
     //  Input Events
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Create empty group of starts
-    this.estrellas = this.physics.add.group();
+    this.stars = this.physics.add.group();
 
     // find object layer
     // if type is "stars", add to stars group
@@ -100,54 +96,74 @@ export default class Juego extends Phaser.Scene {
 
       const { x = 0, y = 0, name } = objData;
       switch (name) {
-        case "estrella": {
+        case "star": {
           // add star to scene
           // console.log("estrella agregada: ", x, y);
-          const star = this.estrellas.create(x, y, "star");
+          const star = this.stars.create(x, y, "star");
           break;
         }
       }
+
+      this.score = 0;
+    this.scoreText = this.add.text(20, 20, "Score:" + this.score, {
+      fontSize: "32px",
+      fontStyle: "bold",
+      fill: "#FFF"
+    });
     });
 
-    this.physics.add.collider(this.jugador, plataformaLayer);
-    this.physics.add.collider(this.estrellas, plataformaLayer);
-    this.physics.add.collider(
-      this.jugador,
-      this.estrellas,
-      this.recolectarEstrella
+    this.physics.add.collider(this.player, plataformaLayer);
+    this.physics.add.collider(this.stars, plataformaLayer);
+    this.physics.add.collider(this.stars, this.player);
+
+    this.physics.add.overlap(
+      this.player,
+      this.stars,
+      this.collectStar,
+      null,
+      this
     );
+      //add score on scene
+
+
+
   }
 
   update() {
     // update game objects
     // check input
     //move left
+    if(this.score===50){
+      this.scene.start("Win");
+    }
+
     if (this.cursors.left.isDown) {
-      this.jugador.setVelocityX(-160);
-      this.jugador.anims.play("left", true);
+      this.player.setVelocityX(-160);
+      this.player.anims.play("left", true);
     }
     //move right
     else if (this.cursors.right.isDown) {
-      this.jugador.setVelocityX(160);
-      this.jugador.anims.play("right", true);
+      this.player.setVelocityX(160);
+      this.player.anims.play("right", true);
     }
     //stop
     else {
-      this.jugador.setVelocityX(0);
-      this.jugador.anims.play("turn");
+      this.player.setVelocityX(0);
+      this.player.anims.play("turn");
     }
 
     //jump
-    if (this.cursors.up.isDown && this.jugador.body.blocked.down) {
-      this.jugador.setVelocityY(-330);
+    if (this.cursors.up.isDown && this.player.body.blocked.down) {
+      this.player.setVelocityY(-330);
     }
   }
 
-  recolectarEstrella(jugador, estrella) {
-    estrella.disableBody(true, true);
+  collectStar(player, stars) {
+    stars.disableBody(true, true);
 
+    this.score+=10;
+    this.scoreText.setText("Score: " + this.score);
     // todo / para hacer: sumar puntaje
-
     // todo / para hacer: controlar si el grupo esta vacio
     // todo / para hacer: ganar el juego
   }

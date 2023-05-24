@@ -9,8 +9,11 @@ export default class Game extends Phaser.Scene {
   score;
   scoreText;
   gameWin;
+  gameOver;
+  timer;
 
   init() {
+    this.gameOver = false;
     this.gameWin = false;
     // this is called before the scene is created
     // init variables
@@ -52,32 +55,40 @@ export default class Game extends Phaser.Scene {
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
-    const capaFondo = map.addTilesetImage("sky", "tilesBack");
-    const capaPlataformas = map.addTilesetImage("platform", "tilesPlatform");
+    const skyLayer = map.addTilesetImage("sky", "tilesBack");
+    const platformsLayer = map.addTilesetImage("platform", "tilesPlatform");
+    //const exitLayer = map.addTilesetImage("exit", "tilesExit");
 
     // Parameters: layer name (or index) from Tiled, tileset, x, y
-    const fondoLayer = map.createLayer("background", capaFondo, 0, 0);
-    const plataformaLayer = map.createLayer(
+    const bgLayer = map.createLayer("background", skyLayer, 0, 0);
+    const platformLayer = map.createLayer(
       "platforms",
-      capaPlataformas,
+      platformsLayer,
       0,
       0
     );
-    const objectosLayer = map.getObjectLayer("objects");
+    //const exit = map.createLayer("exit", exitLayer, 0, 0);
 
-    plataformaLayer.setCollisionByProperty({ colision: true });
+    const objectsLayer = map.getObjectLayer("objects");
 
-    console.log(objectosLayer);
+    platformLayer.setCollisionByProperty({ colision: true });
+
+    console.log(objectsLayer);
+
 
     // crear el jugador
     // Find in the Object Layer, the name "dude" and get position
-    const spawnPoint = map.findObject(
+    let spawnPoint = map.findObject(
       "objects",
       (obj) => obj.name === "player"
     );
+    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
+
+    spawnPoint = map.findObject("objects", (obj) => obj.name === "exit");
+    this.exit = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "exit").setScale(0.2);
     console.log(spawnPoint);
     // The player and its settings
-    this.player = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "dude");
+    
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.1);
@@ -91,7 +102,7 @@ export default class Game extends Phaser.Scene {
 
     // find object layer
     // if type is "stars", add to stars group
-    objectosLayer.objects.forEach((objData) => {
+    objectsLayer.objects.forEach((objData) => {
       //console.log(objData.name, objData.type, objData.x, objData.y);
 
       const { x = 0, y = 0, name } = objData;
@@ -103,18 +114,34 @@ export default class Game extends Phaser.Scene {
           break;
         }
       }
+    });
 
-      this.score = 0;
+    this.score = 0;
     this.scoreText = this.add.text(20, 20, "Score:" + this.score, {
+    fontSize: "32px",
+    fontStyle: "bold",
+    fill: "#FFF"
+    });
+
+    this.timer = 10;
+    this.timerText = this.add.text(700, 20, this.timer, {
       fontSize: "32px",
       fontStyle: "bold",
       fill: "#FFF"
     });
+    
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.onSecond,
+      callbackScope: this, 
+      loop: true
     });
 
-    this.physics.add.collider(this.player, plataformaLayer);
-    this.physics.add.collider(this.stars, plataformaLayer);
+    this.physics.add.collider(this.player, platformLayer);
+    this.physics.add.collider(this.stars, platformLayer);
     this.physics.add.collider(this.stars, this.player);
+    this.physics.add.collider(this.player, this.exit);
+    this.physics.add.collider(this.exit, platformLayer);
 
     this.physics.add.overlap(
       this.player,
@@ -124,16 +151,15 @@ export default class Game extends Phaser.Scene {
       this
     );
       //add score on scene
-
-
-
   }
 
   update() {
     // update game objects
     // check input
     //move left
-    if(this.score===50){
+
+
+    if(this.stars.getTotalUsed() === 0){
       this.scene.start("Win");
     }
 
@@ -154,17 +180,29 @@ export default class Game extends Phaser.Scene {
 
     //jump
     if (this.cursors.up.isDown && this.player.body.blocked.down) {
-      this.player.setVelocityY(-330);
+      this.player.setVelocityY(-230);
+    }
+
+   if(this.gameOver === true){
+      this.scene.start("GameOver");
     }
   }
 
-  collectStar(player, stars) {
-    stars.disableBody(true, true);
-
+  collectStar(player, stars) { 
+    stars.destroy(true);
     this.score+=10;
     this.scoreText.setText("Score: " + this.score);
     // todo / para hacer: sumar puntaje
     // todo / para hacer: controlar si el grupo esta vacio
     // todo / para hacer: ganar el juego
+    console.log(this.numStars);
+  }
+
+  onSecond(){
+    this.timer--;
+    this.timerText.setText(this.timer);
+    if(this.timer<0){
+      //this.gameOver = true;
+    }
   }
 }

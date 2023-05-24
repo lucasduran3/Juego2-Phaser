@@ -10,7 +10,7 @@ export default class Preload extends Phaser.Scene{
         this.load.image("tilesPlatform", "./public/assets/images/platform.png");
         this.load.image("win", "./public/assets/images/win.png");
         this.load.image("star", "./public/assets/images/star.png");
-    
+        this.load.image('exit', "./public/assets/images/salida.png");
         this.load.spritesheet("dude", "./public/assets/images/dude.png", {
           frameWidth: 32,
           frameHeight: 48,

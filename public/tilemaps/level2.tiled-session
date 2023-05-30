@@ -1,0 +1,66 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "levelTwo.tmj",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "Todos los archivos (*)",
+    "fileStates": {
+        "levelTwo.tmj": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 423.5,
+                "y": 267
+            }
+        },
+        "nivel1.json": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 335.3333333333333,
+                "y": 533.3333333333333
+            }
+        },
+        "nivel1.json#platform": {
+            "scaleInDock": 1
+        },
+        "nivel1.json#sky": {
+            "scaleInDock": 1
+        },
+        "platforms2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sky2.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "D:/Info anterior/CarpetaProtegida/Lucas/unraf/2do/1er cuatrimestre/programacion/Juego2-Phaser/public/tilemaps",
+    "last.imagePath": "D:/Info anterior/CarpetaProtegida/Lucas/unraf/2do/1er cuatrimestre/programacion/Juego2-Phaser/public/assets/images",
+    "map.height": 18,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "json",
+    "map.width": 24,
+    "openFiles": [
+        "levelTwo.tmj"
+    ],
+    "project": "level2.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "levelTwo.tmj",
+        "nivel1.json",
+        "platforms2.tsx",
+        "sky2.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

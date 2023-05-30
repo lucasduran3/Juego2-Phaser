@@ -13,6 +13,7 @@ export default class Game extends Phaser.Scene {
   timer;
 
   init() {
+    this.numStars = 0;
     this.gameOver = false;
     this.gameWin = false;
     // this is called before the scene is created
@@ -86,6 +87,7 @@ export default class Game extends Phaser.Scene {
 
     spawnPoint = map.findObject("objects", (obj) => obj.name === "exit");
     this.exit = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "exit").setScale(0.2);
+    this.exit.visible = false;
     console.log(spawnPoint);
     // The player and its settings
     
@@ -123,7 +125,7 @@ export default class Game extends Phaser.Scene {
     fill: "#FFF"
     });
 
-    this.timer = 10;
+    this.timer = 30;
     this.timerText = this.add.text(700, 20, this.timer, {
       fontSize: "32px",
       fontStyle: "bold",
@@ -150,19 +152,20 @@ export default class Game extends Phaser.Scene {
       null,
       this
     );
-      //add score on scene
+
+    this.physics.add.overlap(
+      this.player,
+      this.exit,
+      this.isWin,
+      () => this.numStars >= 1,
+      this
+    );
   }
 
   update() {
     // update game objects
     // check input
     //move left
-
-
-    if(this.stars.getTotalUsed() === 0){
-      this.scene.start("Win");
-    }
-
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-160);
       this.player.anims.play("left", true);
@@ -192,17 +195,25 @@ export default class Game extends Phaser.Scene {
     stars.destroy(true);
     this.score+=10;
     this.scoreText.setText("Score: " + this.score);
-    // todo / para hacer: sumar puntaje
-    // todo / para hacer: controlar si el grupo esta vacio
-    // todo / para hacer: ganar el juego
-    console.log(this.numStars);
+    this.numStars++;
+    if(this.stars.getTotalUsed() === 0){
+      this.exit.visible = true;
+    }
   }
 
   onSecond(){
     this.timer--;
     this.timerText.setText(this.timer);
     if(this.timer<0){
-      //this.gameOver = true;
+      this.gameOver = true;
     }
+  }
+
+  isWin(player, exit){
+    this.scene.start("GameLvl",{
+      numStars : this.numStars,
+      y : "dato",
+      z:"otro dato"
+    });
   }
 }

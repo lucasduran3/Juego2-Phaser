@@ -28,10 +28,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    // todo / para hacer: texto de puntaje
-
-    
-    //  Our player animations, turning, walking left and walking right.
+    //this.scene.start("GameLvl");
     this.anims.create({
       key: "left",
       frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -88,7 +85,7 @@ export default class Game extends Phaser.Scene {
     spawnPoint = map.findObject("objects", (obj) => obj.name === "exit");
     this.exit = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "exit").setScale(0.2);
     this.exit.visible = false;
-    console.log(spawnPoint);
+    
     // The player and its settings
     
 
@@ -101,7 +98,8 @@ export default class Game extends Phaser.Scene {
 
     // Create empty group of starts
     this.stars = this.physics.add.group();
-
+    
+    
     // find object layer
     // if type is "stars", add to stars group
     objectsLayer.objects.forEach((objData) => {
@@ -117,6 +115,24 @@ export default class Game extends Phaser.Scene {
         }
       }
     });
+
+    this.bombs = this.physics.add.group();
+    objectsLayer.objects.forEach((objData) => {
+      //console.log(objData.name, objData.type, objData.x, objData.y);
+      const { x = 0, y = 0, name } = objData;
+      switch (name) {
+        case "bomb": {
+          // add star to scene
+          // console.log("estrella agregada: ", x, y);
+          const star = this.bombs.create(x, y, "bomb").setScale(1.5);
+          break;
+        }
+      }
+    });
+
+    
+
+
 
     this.score = 0;
     this.scoreText = this.add.text(20, 20, "Score:" + this.score, {
@@ -144,6 +160,8 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.stars, this.player);
     this.physics.add.collider(this.player, this.exit);
     this.physics.add.collider(this.exit, platformLayer);
+    this.physics.add.collider(this.bombs, platformLayer);
+    this.physics.add.collider(this.bombs, this.player);
 
     this.physics.add.overlap(
       this.player,
@@ -158,6 +176,14 @@ export default class Game extends Phaser.Scene {
       this.exit,
       this.isWin,
       () => this.numStars >= 1,
+      this
+    );
+
+    this.physics.add.overlap(
+      this.player,
+      this.bombs,
+      this.bombExplosion,
+      null,
       this
     );
   }
@@ -193,9 +219,8 @@ export default class Game extends Phaser.Scene {
 
   collectStar(player, stars) { 
     stars.destroy(true);
-    this.score+=10;
-    this.scoreText.setText("Score: " + this.score);
     this.numStars++;
+    this.scoreText.setText("Score: " + this.numStars);
     if(this.stars.getTotalUsed() === 0){
       this.exit.visible = true;
     }
@@ -215,5 +240,9 @@ export default class Game extends Phaser.Scene {
       y : "dato",
       z:"otro dato"
     });
+  }
+
+  bombExplosion(player, bomb){
+    this.scene.start("Game");
   }
 }

@@ -148,6 +148,54 @@
                  "width":0,
                  "x":336.022356776898,
                  "y":535.891942244993
+                }, 
+                {
+                 "height":0,
+                 "id":14,
+                 "name":"bomb",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":213.283651606893,
+                 "y":419.189566837448
+                }, 
+                {
+                 "height":0,
+                 "id":16,
+                 "name":"bomb",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":440.652072659525,
+                 "y":367.545412203074
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"bomb",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":684.788076385654,
+                 "y":254.196553330228
+                }, 
+                {
+                 "height":0,
+                 "id":18,
+                 "name":"bomb",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":425.896599906847,
+                 "y":98.5933861201677
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -156,7 +204,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":12,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.5",

@@ -155,6 +155,13 @@ export default class Game extends Phaser.Scene {
       loop: true
     });
 
+    this.time.addEvent({
+      delay:1000,
+      callback: this.addBomb,
+      callbackScope: this,
+      loop: true
+    });
+
     this.physics.add.collider(this.player, platformLayer);
     this.physics.add.collider(this.stars, platformLayer);
     this.physics.add.collider(this.stars, this.player);
@@ -244,5 +251,10 @@ export default class Game extends Phaser.Scene {
 
   bombExplosion(player, bomb){
     this.scene.start("Game");
+  }
+
+  addBomb(){
+    const randomX = Phaser.Math.RND.between(32,768);
+    this.bombs.create(randomX, 0, "bomb");
   }
 }

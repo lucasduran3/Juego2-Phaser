@@ -6,14 +6,13 @@ export default class Game extends Phaser.Scene {
     // the key will be used to start the scene by other scenes
     super("Game");
   }
-  score;
-  scoreText;
   gameWin;
   gameOver;
-  timer;
+  numStars;
 
   init() {
-    this.numStars = 0;
+    this.scene.stop("Score")
+    this.scene.run("Score");
     this.gameOver = false;
     this.gameWin = false;
     // this is called before the scene is created
@@ -28,7 +27,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    //this.scene.start("GameLvl");
+  
     this.anims.create({
       key: "left",
       frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -110,7 +109,7 @@ export default class Game extends Phaser.Scene {
         case "star": {
           // add star to scene
           // console.log("estrella agregada: ", x, y);
-          const star = this.stars.create(x, y, "star");
+          const star = this.stars.create(x, y, "star").setCircle(32, 0, 0).setBounce(0.5).setCircle(10, 2, 1).setBounce(0.5);
           break;
         }
       }
@@ -124,36 +123,33 @@ export default class Game extends Phaser.Scene {
         case "bomb": {
           // add star to scene
           // console.log("estrella agregada: ", x, y);
-          const star = this.bombs.create(x, y, "bomb").setScale(1.5);
+          const star = this.bombs.create(x, y, "bomb").setScale(1.5).setScale(1.5).setCircle(7, -1,-1 ).setBounce(0.2);
           break;
         }
       }
     });
 
     
-
-
-
-    this.score = 0;
-    this.scoreText = this.add.text(20, 20, "Score:" + this.score, {
+    this.numStars = 0;
+    /*this.scoreText = this.add.text(20, 20, "Score:" + this.numStars, {
     fontSize: "32px",
     fontStyle: "bold",
     fill: "#FFF"
-    });
+    });*/
 
-    this.timer = 30;
+    /*this.timer = 30;
     this.timerText = this.add.text(700, 20, this.timer, {
       fontSize: "32px",
       fontStyle: "bold",
       fill: "#FFF"
-    });
+    });*/
     
-    this.time.addEvent({
+    /*this.time.addEvent({
       delay: 1000,
       callback: this.onSecond,
       callbackScope: this, 
       loop: true
-    });
+    });*/
 
     this.time.addEvent({
       delay:1000,
@@ -227,7 +223,11 @@ export default class Game extends Phaser.Scene {
   collectStar(player, stars) { 
     stars.destroy(true);
     this.numStars++;
-    this.scoreText.setText("Score: " + this.numStars);
+    //this.scoreText.setText("Score: " + this.numStars);
+    console.log(this.scene);
+    this.scene.run("Score",{
+      numStars : this.numStars
+    });
     if(this.stars.getTotalUsed() === 0){
       this.exit.visible = true;
     }
@@ -243,18 +243,13 @@ export default class Game extends Phaser.Scene {
 
   isWin(player, exit){
     this.scene.start("GameLvl",{
-      numStars : this.numStars,
-      y : "dato",
-      z:"otro dato"
+      numStars : this.numStars
     });
+    this.scene.stop("Timer");
+    this.scene.start("Timer");
   }
 
   bombExplosion(player, bomb){
-    this.scene.start("Game");
-  }
-
-  addBomb(){
-    const randomX = Phaser.Math.RND.between(32,768);
-    this.bombs.create(randomX, 0, "bomb");
+    this.scene.start("GameOver");
   }
 }

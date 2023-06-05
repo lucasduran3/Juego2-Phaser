@@ -21,9 +21,7 @@ export default class Score extends Phaser.Scene{
             20,
             "Score: " + this.numStars,
             { fontSize: "32px", fill: "#FFFFFF", fontStyle: "bold" }
-          );
-
-        
+          );   
     }
 
     update(data){

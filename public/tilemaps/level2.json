@@ -214,6 +214,30 @@
                  "width":0,
                  "x":1041.33333333333,
                  "y":529.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":26,
+                 "name":"robot",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":368,
+                 "y":365.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":28,
+                 "name":"robot",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":593.333333333333,
+                 "y":526.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -222,7 +246,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":26,
+ "nextobjectid":30,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",

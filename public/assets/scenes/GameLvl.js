@@ -65,7 +65,11 @@ export default class GameLvl extends Phaser.Scene {
 
       this.player.setBounce(0.1);
       this.player.setCollideWorldBounds(true);
-  
+      
+      spawnPoint = map.findObject("objects", (obj) => obj.name === "robot");
+      this.robot = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "robot").setScale(0.1).setCircle(150,0,-1);
+      this.robot.setCollideWorldBounds(true);
+      this.robot.setGravity(1000)
 
       this.cursors = this.input.keyboard.createCursorKeys();
   
@@ -99,7 +103,9 @@ export default class GameLvl extends Phaser.Scene {
       this.physics.add.collider(this.bombs, platformLayer);
       this.physics.add.collider(this.bombs, this.player);
       this.physics.add.collider(this.bombs, this.stars);
-  
+      this.physics.add.collider(this.robot, this.player);
+      this.physics.add.collider(this.robot, platformLayer);
+      
       this.physics.add.overlap(
         this.player,
         this.stars,
@@ -123,6 +129,14 @@ export default class GameLvl extends Phaser.Scene {
         null,
         this
       );
+
+      this.physics.add.overlap(
+        this.player,
+        this.robot,
+        this.bombExplosion,
+        null,
+        this
+      );
      
       this.cameras.main.startFollow(this.player);
       this.physics.world.setBounds(0,0, map.widthInPixels, map.heightInPixels);
@@ -138,6 +152,7 @@ export default class GameLvl extends Phaser.Scene {
     }
 
     update() {
+      this.enemyFollows();
       if (this.cursors.left.isDown) {
         this.player.setVelocityX(-160);
         this.player.anims.play("left", true);
@@ -192,4 +207,7 @@ export default class GameLvl extends Phaser.Scene {
     bombExplosion(player, bomb){
       this.scene.start("GameOver");
     }
+    enemyFollows () {
+      this.physics.moveToObject(this.robot, this.player, 60);
+  }
   }

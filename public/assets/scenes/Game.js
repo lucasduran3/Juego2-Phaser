@@ -27,7 +27,6 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-  
     this.anims.create({
       key: "left",
       frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -85,8 +84,12 @@ export default class Game extends Phaser.Scene {
     this.exit = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "exit").setScale(0.2);
     this.exit.visible = false;
     
-    // The player and its settings
-    
+    // create robot
+
+   spawnPoint = map.findObject("objects", (obj) => obj.name === "robot");
+    this.robot = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, "robot").setScale(0.1).setCircle(150,0,-1);
+    this.robot.setCollideWorldBounds(true);
+    this.robot.setGravity(1000)
 
     //  Player physics properties. Give the little guy a slight bounce.
     this.player.setBounce(0.1);
@@ -123,7 +126,7 @@ export default class Game extends Phaser.Scene {
         case "bomb": {
           // add star to scene
           // console.log("estrella agregada: ", x, y);
-          const star = this.bombs.create(x, y, "bomb").setScale(1.5).setScale(1.5).setCircle(7, -1,-1 ).setBounce(0.2);
+          const star = this.bombs.create(x, y, "bomb").setScale(1.5).setScale(1.5).setCircle(5, 2, 2).setBounce(0.2);
           break;
         }
       }
@@ -165,6 +168,8 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.exit, platformLayer);
     this.physics.add.collider(this.bombs, platformLayer);
     this.physics.add.collider(this.bombs, this.player);
+    this.physics.add.collider(this.robot, platformLayer);
+    this.physics.add.collider(this.robot, this.player);
 
     this.physics.add.overlap(
       this.player,
@@ -189,12 +194,19 @@ export default class Game extends Phaser.Scene {
       null,
       this
     );
+
+    this.physics.add.overlap(
+      this.player,
+      this.robot,
+      this.bombExplosion,
+      null,
+      this
+    );
   }
 
   update() {
-    // update game objects
-    // check input
-    //move left
+    this.enemyFollows();
+
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-160);
       this.player.anims.play("left", true);
@@ -252,4 +264,7 @@ export default class Game extends Phaser.Scene {
   bombExplosion(player, bomb){
     this.scene.start("GameOver");
   }
+  enemyFollows () {
+    this.physics.moveToObject(this.robot, this.player, 60);
+}
 }

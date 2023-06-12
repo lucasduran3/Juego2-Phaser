@@ -1,5 +1,8 @@
-# Phaser 3 Template
+# Trabajo Practico N°2
 
-Plantilla para iniciar nuevos proyectos con PHASER 3.
 
-Contiene configuración inicial y buenas prácticas de estructuras de carpetas.
+**Materia**: Programación 1.
+
+**Docentes**: Nicolas Nocete, Federico Degiovanni.
+
+**Alumno**: Lucas Durán.
